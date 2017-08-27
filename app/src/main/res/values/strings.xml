@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">G12 Matrick App</string>
+    <string name="action_settings">Contact us</string>
+    <string name="title_activity_to_be_removed">G12</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="quizzi_text">If you are not in a mode to do a hundred questions, You can always use quizzi to test your progress by only doing much less.</string>
+    <string name="challenge_text">Help others and yourself by challenging others to become more than what others expect from you. Earn points while doing that.</string>
+    <string name="title_activity_quizzi">quizzi</string>
+    <string-array name="nav_item_activity_titles">
+        <item>Choose Subject</item>
+        <item>Quizzi</item>
+        <item>My Progress</item>
+        <item>Challenges</item>
+        <item>EUEE Result</item>
+    </string-array>
+    <string name="title_activity_subject__choose">subject_Choose</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+    <string name="fb_text">Even if we are trying our best to make this app great, We need more insights and comments in our work to make it even better. So like us and message us.</string>
+    <string name="fb_header">Connect with Facebook</string>
+    <string name="connect">Connect</string>
+</resources>

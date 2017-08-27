@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/rippleFrameLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:focusable="false"
+    android:background="@color/colorAll"
+    android:focusableInTouchMode="false"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/mainSubjectIcon"
+            android:padding="35dp"
+            android:focusable="false"
+            android:background="@color/colorAll"
+            android:focusableInTouchMode="false"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            app:srcCompat="@drawable/ic_chem"
+            android:layout_height="150dp" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/mainSubjectName"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:layout_gravity="bottom|center"
+            android:text="Chemistry"
+            android:padding="8dp"
+            android:textColor="#000"
+            android:textSize="17sp"
+            android:layout_height="wrap_content" />
+
+</FrameLayout>

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/progresslayout"
+        android:gravity="center"
+        android:visibility="gone"
+        android:background="@color/colorAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/indeterminate_progress_library"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            style="@style/Widget.MaterialProgressBar.ProgressBar" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ErrorSheet"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@color/colorAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="Error occured while tring to load this paper"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:text="Go Back"
+            app:backgroundTint="#d3d4d5"
+            android:textColor="@color/colorAccent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sheetsSwipeRefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <armored.g12matrickapp.Widgets.CustomWebView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/sheetswebview" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</RelativeLayout>

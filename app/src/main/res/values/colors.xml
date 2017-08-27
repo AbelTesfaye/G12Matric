@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#029789</color>
+    <color name="colorPrimaryDark">#026a5d</color>
+    <color name="colorAccent">#40c9ff</color>
+    <color name="colorOne">#4a148c</color>
+    <color name="colorTwo">#b71c1c</color>
+    <color name="colorThree">#1565c0</color>
+    <color name="colorFour">#388e3c</color>
+    <color name="colorFive">#4e342e</color>
+    <color name="colorSix">#00897b</color>
+    <color name="colorSeven">#37474f</color>
+    <color name="colorAll">#ffffff</color>
+
+
+    <color name="arc_progress_unfinished_color">#ddd</color>
+    <color name="arc_progress_finished_color">#40c9ff</color>
+    <color name="arc_progress_text_color">#1a8bb7</color>
+
+    <color name="quiz_pic_bg">#E9F1DF</color>
+    <color name="fb_cover_bg">#2E4480</color>
+
+
+    <color name="anything_selected">#aaa0a0a0</color>
+    <color name="anything_pressed">#55a0a0a0</color>
+    <color name="old">#fae9ab</color>
+    <color name="nightmode">#222222</color>
+    <color name="darkblue">#0E535B</color>
+
+</resources>

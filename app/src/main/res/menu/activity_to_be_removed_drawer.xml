@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_change_sub"
+            android:icon="@drawable/ic_change_subjects"
+            android:title="Change Subject" />
+        <item
+            android:id="@+id/nav_quizzi"
+            android:icon="@drawable/ic_quizzi"
+            android:title="Quizzi" />
+        <item
+            android:id="@+id/nav_my_progress"
+            android:icon="@drawable/ic_my_progress"
+            android:title="My Progress" />
+        <item
+            android:id="@+id/nav_challenge"
+            android:icon="@drawable/ic_challenge"
+            android:title="Challenges" />
+        <item
+            android:id="@+id/euee_result"
+            android:icon="@drawable/ic_euee_result"
+            android:title="EUEE Result" />
+    </group>
+
+    <item android:title="Other">
+        <menu>
+            <item
+                android:id="@+id/settings"
+                android:icon="@drawable/ic_settings"
+                android:title="Settings" />
+            <item
+                android:id="@+id/nav_share"
+                android:icon="@drawable/ic_share_black_24dp"
+                android:title="Share" />
+            <item
+                android:id="@+id/nav_send"
+                android:icon="@drawable/ic_contact_us"
+                android:title="Contact Us" />
+            <item
+                android:id="@+id/rate_us"
+                android:icon="@drawable/ic_star_border_black_24dp"
+                android:title="Rate On PlayStore" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context="armored.g12matrickapp.Activities.subject_Choose">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+        </android.support.v7.widget.Toolbar>
+
+        <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            android:id="@+id/secondaryTab"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:titleMargin="0dp"
+            app:contentInsetStart="0dp"
+            app:layout_scrollFlags="scroll|enterAlwaysCollapsed"
+            android:weightSum="1">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:id="@+id/detailToolbarTextView"
+                    android:layout_width="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="top"
+                    android:textColor="#fff"
+                    android:text="Subjects"
+                    style="@style/Base.TextAppearance.AppCompat.Widget.ActionBar.Title"
+                    android:layout_height="match_parent" />
+
+            </FrameLayout>
+
+        </android.support.v7.widget.Toolbar>
+        </android.support.design.widget.AppBarLayout>
+
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/container_one"
+        android:layout_width="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <View
+            android:layout_alignParentTop="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_gravity="bottom" android:background="@drawable/appbar_gradient"
+            android:layout_width="match_parent" android:layout_height="2.5dp"
+            />
+        <include
+            android:id="@+id/fragment"
+            layout="@layout/blank_layout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        </RelativeLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:id="@+id/container_two"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            tools:ignore="UselessParent">
+            <View
+                android:layout_gravity="bottom" android:background="@drawable/appbar_gradient"
+                android:layout_width="match_parent" android:layout_height="3dp"
+                 />
+
+            <include
+                android:id="@+id/fragment2"
+                layout="@layout/blank_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/paperPageMenu"
+        android:background="@color/arc_progress_unfinished_color"
+        app:behavior_hideable="true"
+        android:clipToPadding="true"
+        android:layout_width="match_parent"
+        app:elevation="100dp"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/filter"
+                android:text="Filter"
+                android:drawablePadding="15dp"
+                android:backgroundTint="#d3d4d5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:scrollbars="none"
+                android:scrollbarAlwaysDrawHorizontalTrack="false"
+                android:nestedScrollingEnabled="true"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/themes"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/darknight"
+                        android:layout_width="80dp"
+                        android:layout_margin="15dp"
+                        android:gravity="center"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorAll"
+                        android:text="A"
+                        android:background="@drawable/nightmodeimg"
+                        android:layout_height="80dp" />
+
+                    <TextView
+                        android:id="@+id/oldpaperc"
+                        android:layout_width="80dp"
+                        android:gravity="center"
+                        android:layout_margin="15dp"
+                        android:textSize="20sp"
+                        android:textColor="#000"
+                        android:text="A"
+                        android:background="@drawable/oldpaperimg"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/darkbluish"
+                        android:layout_width="80dp"
+                        android:gravity="center"
+                        android:layout_margin="15dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorAll"
+                        android:text="A"
+                        android:background="@drawable/darkblue"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/twilight"
+                        android:layout_width="80dp"
+                        android:gravity="center"
+                        android:layout_margin="15dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorAll"
+                        android:text="A"
+                        android:background="@drawable/nightmodeimg"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/othertheme"
+                        android:layout_width="80dp"
+                        android:gravity="center"
+                        android:layout_margin="15dp"
+                        android:textSize="20sp"
+                        android:textColor="@color/colorAll"
+                        android:text="A"
+                        android:background="@drawable/nightmodeimg"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:text="A"
+                    android:gravity="center"
+                    android:textSize="12sp"
+                    android:layout_height="match_parent" />
+
+                <android.support.v7.widget.AppCompatSeekBar
+                    android:layout_width="0dp"
+                    android:id="@+id/sizesetterbar"
+                    android:layout_weight="5"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:text="A"
+                    android:textSize="26sp"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/exit"
+                android:text="Exit"
+                android:drawablePadding="15dp"
+                app:backgroundTint="#d3d4d5"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|bottom"
+        android:visibility="gone"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_email" />
+
+</android.support.design.widget.CoordinatorLayout>
