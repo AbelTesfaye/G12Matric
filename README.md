@@ -1,6 +1,7 @@
 # G12 Matrick App
 
-[![N|Solid](https://lh3.googleusercontent.com/uZRHwpKrtZvZSfXikCFB66yfOLLKFPoX7JXgMhbsO0Z2PPCXNpXQ4aQfTM-gOsL_iPjL=w300-rw)](https://play.google.com/store/apps/details?id=tk.zufanapps.eueeapp)
+[![Our logo](https://lh3.googleusercontent.com/uZRHwpKrtZvZSfXikCFB66yfOLLKFPoX7JXgMhbsO0Z2PPCXNpXQ4aQfTM-gOsL_iPjL=w300-rw)](https://play.google.com/store/apps/details?id=tk.zufanapps.eueeapp)
+
 G12 Matrick App is an application made for android that aims to assist 
 Ethiopian grade 12 students with matrick exam materials 
 to help them prepare for national examination
