@@ -1,6 +1,11 @@
 package armored.g12matrickapp.Fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.annotation.TargetApi;
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -10,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +30,7 @@ import armored.g12matrickapp.Adapters.GridCatagoryStructure;
 import armored.g12matrickapp.R;
 import armored.g12matrickapp.Utils.Constants;
 import armored.g12matrickapp.Widgets.ExpandableGridView;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
  * Created by Falcon on 7/20/2017 :: 01:35 inside G12MatrickApp .
@@ -33,6 +40,9 @@ import armored.g12matrickapp.Widgets.ExpandableGridView;
 public class Choose_Subject_Fragment extends Fragment {
 
     ExpandableGridView catGrid;
+
+    MaterialProgressBar mpbar;
+    LinearLayout progressLayout;
 
     List<GridCatagoryStructure> dataStructureList = new ArrayList<GridCatagoryStructure>();
     String[] subs = {
@@ -76,15 +86,16 @@ public class Choose_Subject_Fragment extends Fragment {
             }
         });
 
-        ((subject_Choose) getActivity()).actionOnBottomMenu(Constants.HIDE_BOTTOM_MENU);
         ((subject_Choose) getActivity()).hide_container_two();
-        ((subject_Choose) getActivity()).show_menu_fab(false);
 
         ((subject_Choose) getActivity()).SetTitleOfDetailFromFragment("Subjects");
 
         AppCompatImageView quiz = (AppCompatImageView) v.findViewById(R.id.appCompatImageView);
         AppCompatImageView challenge = (AppCompatImageView) v.findViewById(R.id.challengeImageView);
         AppCompatImageView fb = (AppCompatImageView) v.findViewById(R.id.appCompatImageView2);
+
+        progressLayout = (LinearLayout) v.findViewById(R.id.progresslayout);
+        mpbar = (MaterialProgressBar) v.findViewById(R.id.indeterminate_progress_library);
 
         Glide.with(this)
                 .load(R.drawable.quiz)
@@ -101,12 +112,43 @@ public class Choose_Subject_Fragment extends Fragment {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(fb);
 
+        if (mpbar.getIndeterminateDrawable() != null) {
+            mpbar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+        }
+
+        showProgress(true);
 
         PopulateGridSubjects pop = new PopulateGridSubjects();
         pop.execute();
 
         return v;
 
+    }
+
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+    private void showProgress(final boolean show) {
+        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
+        // for very easy animations. If available, use these APIs to fade-in
+        // the progress spinner.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+            progressLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+            catGrid.setVisibility(!show ? View.VISIBLE : View.GONE);
+            mpbar.animate().setDuration(shortAnimTime).alpha(
+                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    progressLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+                }
+            });
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            progressLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+            progressLayout.setVisibility(show ? View.GONE : View.VISIBLE);
+            catGrid.setVisibility(!show ? View.VISIBLE : View.GONE);
+        }
     }
 
     private class PopulateGridSubjects extends AsyncTask<Void , Void , Void> {
@@ -154,6 +196,7 @@ public class Choose_Subject_Fragment extends Fragment {
             super.onPostExecute(aVoid);
             catGrid.setAdapter(new GridCatagoryAdapter(getActivity() , R.layout.grid_item , dataStructureList));
             catGrid.setExpanded(true);
+            showProgress(false);
         }
 
     }

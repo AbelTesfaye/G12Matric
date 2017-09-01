@@ -46,6 +46,7 @@ import armored.g12matrickapp.R;
 import armored.g12matrickapp.Utils.Constants;
 import armored.g12matrickapp.Utils.DbManager;
 import armored.g12matrickapp.Widgets.CustomWebView;
+import armored.g12matrickapp.Widgets.NestedWebView;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 /**
@@ -55,7 +56,7 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class Main_Question_page_Fragment extends Fragment {
 
-    CustomWebView mainWebViewSheets;
+    NestedWebView mainWebViewSheets;
     SwipeRefreshLayout sheetsSwipeRefresh;
     int Subject = -1;
     int Year = -1;
@@ -83,12 +84,10 @@ public class Main_Question_page_Fragment extends Fragment {
         View v = inflater.inflate(R.layout.content_question_page, container, false);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        mainWebViewSheets = (CustomWebView) v.findViewById(R.id.sheetswebview);
-        mainWebViewSheets.setExpanded(true);
+        mainWebViewSheets = (NestedWebView) v.findViewById(R.id.sheetswebview);
 
         ((subject_Choose) getActivity()).hide_second_toolbar();
         ((subject_Choose) getActivity()).deselectNavMenu();
-        ((subject_Choose) getActivity()).show_menu_fab(true);
 
         sheetsSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.sheetsSwipeRefresh);
         progressLayout = (LinearLayout) v.findViewById(R.id.progresslayout);
@@ -108,8 +107,6 @@ public class Main_Question_page_Fragment extends Fragment {
                         stopTimer();
                         mainWebViewSheets.reload();
                         startTimer();
-                        /*buildSheetsUI builder = new buildSheetsUI();
-                        builder.execute(new String[]{"http://something.com/klr.php"});*/
                         sheetsSwipeRefresh.setRefreshing(false);
                     }
                 }).setNegativeButton("No", new DialogInterface.OnClickListener() {

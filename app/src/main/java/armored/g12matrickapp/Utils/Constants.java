@@ -60,7 +60,7 @@ public class Constants {
         }
     }
 
-    public static int getHowMuchUnitsSubjectHasG11(int code){
+    public static int getHowManyUnitsSubjectHasG11(int code){
         int units = 0;
         switch (code){
             case 1:
@@ -103,7 +103,7 @@ public class Constants {
         return units;
     }
 
-    public static int getHowMuchUnitsSubjectHasG12(int code){
+    public static int getHowManyUnitsSubjectHasG12(int code){
         int units = 0;
         switch (code){
             case 1:

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Grade 11"
+            android:gravity="center"
+            android:layout_height="wrap_content" />
+
+        <View android:background="#55d3d4d5" android:layout_width="1dp" android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:text="Grade 12"
+            android:gravity="center"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:gravity="center">
+
+
+            <ListView
+                android:id="@+id/g11listview"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:scrollbars="none"
+                tools:listitem="@layout/chapters_list_item"
+                android:layout_height="match_parent" />
+
+        <View android:background="#55d3d4d5" android:layout_width="1dp" android:layout_height="match_parent" />
+
+            <ListView
+                android:id="@+id/g12listview"
+                android:layout_gravity="center"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:scrollbars="none"
+                tools:listitem="@layout/chapters_list_item"
+                android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</LinearLayout>

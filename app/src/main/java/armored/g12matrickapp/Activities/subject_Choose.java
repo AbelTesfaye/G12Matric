@@ -1,19 +1,26 @@
 package armored.g12matrickapp.Activities;
 
+import android.content.ComponentName;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -22,19 +29,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.os.Bundle;
-import android.view.LayoutInflater;
+import android.text.Html;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-
-import android.widget.LinearLayout;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +42,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
+import armored.g12matrickapp.Adapters.ChooserArrayAdapter;
 import armored.g12matrickapp.Fragments.Choose_Subject_Fragment;
 import armored.g12matrickapp.Fragments.Quizzi_Fragment;
 import armored.g12matrickapp.R;
@@ -81,9 +83,7 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
     private TextView detailsToolbarTextView;
 
     private NestedScrollView container_one;
-    private LinearLayout container_two;
-
-    private FloatingActionButton bottomFabMenu;
+    private NestedScrollView container_two;
 
     private Handler mHandler;
 
@@ -160,32 +160,6 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
         container_two.setVisibility(View.GONE);
     }
 
-    public void show_menu_fab(boolean show){
-        if(show){
-            if(!bottomFabMenu.isShown()){
-                bottomFabMenu.show();
-            }
-        } else{
-            if(bottomFabMenu.isShown()){
-                bottomFabMenu.hide();
-            }
-        }
-    }
-
-    public void actionOnBottomMenu(int i){
-        switch (i){
-            case Constants.COLLAPSE_BOTTOM_MENU:
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                break;
-            case Constants.EXPANDE_BOTTOM_MENU:
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                break;
-            case Constants.HIDE_BOTTOM_MENU:
-                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                break;
-        }
-    }
-
     public void hide_second_toolbar(){
         secondaryToolbar.setVisibility(GONE);
 
@@ -229,8 +203,6 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
 
         secondaryToolbar = (Toolbar) findViewById(R.id.secondaryTab);
 
-        bottomFabMenu = (FloatingActionButton) findViewById(R.id.fab);
-
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, primaryToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -259,41 +231,13 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
         navigationView.getMenu().getItem(0).setChecked(true);
         loadChoosedFragment();
 
-        bottomMenu = (NestedScrollView) findViewById(R.id.paperPageMenu);
-        behavior = BottomSheetBehavior.from(bottomMenu);
-
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState == BottomSheetBehavior.STATE_COLLAPSED){
-                    bottomFabMenu.show();
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
-            }
-        });
-
         container_one = (NestedScrollView) findViewById(R.id.container_one);
-        container_two = (LinearLayout) findViewById(R.id.container_two);
+        container_two = (NestedScrollView) findViewById(R.id.container_two);
 
-        bottomFabMenu.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                actionOnBottomMenu(Constants.EXPANDE_BOTTOM_MENU);
-                bottomFabMenu.hide();
-            }
-        });
 
     }
 
-
-
     DrawerLayout drawer;
-    NestedScrollView bottomMenu;
-    BottomSheetBehavior behavior;
 
     public void SetTitleFromFragment(String title){
         getSupportActionBar().setTitle(title);
@@ -393,6 +337,7 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
         navigationView.getMenu().getItem(navItemIndex).setChecked(true);
     }
 
+    boolean isDOubleTOuched = false;
 
     @Override
     public void onBackPressed() {
@@ -401,13 +346,32 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
             drawer.closeDrawer(GravityCompat.START);
         } else {
 
-            if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
-                actionOnBottomMenu(Constants.COLLAPSE_BOTTOM_MENU);
-            } else {
-
                 if(getSupportFragmentManager().findFragmentById(R.id.fragment) != null) {
                     if(getSupportFragmentManager().findFragmentById(R.id.fragment).getTag().equals(TAG_CHANGE_SUBJECT)){
-                        Toast.makeText(this, "Exit!!!!!!!!", Toast.LENGTH_SHORT).show();
+                        if(!isDOubleTOuched){
+                            isDOubleTOuched = true;
+                            Snackbar snackbar = Snackbar.make(secondaryToolbar , "Press Again To Exit" , Snackbar.LENGTH_SHORT)
+                                    .setAction("EXIT NOW", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            finish();
+                                        }
+                                    });
+                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(subject_Choose.this , R.color.colorPrimary));
+                            snackbar.show();
+
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    isDOubleTOuched = false;
+                                }
+                            } , 1500);
+
+                            snackbar.show();
+
+                        } else{
+                            finish();
+                        }
                     } else {
 
                         AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
@@ -425,7 +389,6 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
                         exitQ.show();
                     }
                 }
-            }
         }
     }
 
@@ -435,6 +398,59 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
             navigationView.getMenu().getItem(x).setChecked(false);
         }
     }
+
+    public void shareDialog() {
+        final List<String> packages = new ArrayList<String>();
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+        shareIntent.setType("text/plain");
+        final List<ResolveInfo> resInfosNew = new ArrayList<ResolveInfo>();
+        final List<ResolveInfo> resInfos = getPackageManager().queryIntentActivities(shareIntent, 0);
+        resInfosNew.addAll(resInfos);
+        if (!resInfos.isEmpty()) {
+            System.out.println("Have package");
+            int count = 0;
+            for (ResolveInfo resInfo : resInfos) {
+                String packageName = resInfo.activityInfo.packageName;
+                if (packageName.contains("com.facebook.katana")) {
+                    resInfosNew.remove(count);
+                } else
+                    packages.add(packageName);
+                count++;
+            }
+        }
+
+        if (packages.size() > 1) {
+            ArrayAdapter<String> adapter = new ChooserArrayAdapter(this, android.R.layout.select_dialog_item, android.R.id.text1, packages);
+
+            String title = "<b>Share via...</b>";
+            new AlertDialog.Builder(this)
+                    .setTitle(Html.fromHtml(title))
+                    .setAdapter(adapter, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int item) {
+                            invokeApplication(packages.get(item), resInfosNew.get(item));
+                        }
+                    })
+                    .show();
+        } else if (packages.size() == 1) {
+            invokeApplication(packages.get(0), resInfos.get(0));
+        }
+    }
+
+    private void invokeApplication(String packageName, ResolveInfo resolveInfo) {
+        // if(packageName.contains("com.twitter.android") || packageName.contains("com.facebook.katana") || packageName.contains("com.kakao.story")) {
+        Intent intent = new Intent();
+        intent.setComponent(new ComponentName(packageName, resolveInfo.activityInfo.name));
+        intent.setAction(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        String sharetxt = "Practice makes perfect. Exercise previous grade 12 matrick questions to do your best.\n Download our app from [zufanapps.tk/g12matrick] and Thank you.";
+        intent.putExtra(Intent.EXTRA_TEXT, sharetxt);
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Share G12");
+        intent.setPackage(packageName);
+        startActivity(intent);
+        // }
+    }
+
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -470,9 +486,13 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
 
         } else if (id == R.id.euee_result) {
 
-        } else if (id == R.id.nav_share) {
+        } else if(id == R.id.settings) {
 
+        } else if (id == R.id.nav_share) {
+            shareDialog();
         } else if (id == R.id.nav_send) {
+
+        } else if(id == R.id.rate_us){
 
         }
 

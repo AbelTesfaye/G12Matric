@@ -30,8 +30,6 @@ public class Quizzi_Fragment extends Fragment {
         View v = inflater.inflate(R.layout.content_quizzi, container, false);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        ((subject_Choose) getActivity()).show_menu_fab(false);
-        ((subject_Choose) getActivity()).actionOnBottomMenu(Constants.HIDE_BOTTOM_MENU);
         ((subject_Choose) getActivity()).hide_container_two();
 
         return v;

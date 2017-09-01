@@ -22,9 +22,28 @@
         app:cardElevation="2dp"
         android:layout_height="wrap_content">
 
+        <LinearLayout
+            android:id="@+id/progresslayout"
+            android:gravity="center"
+            android:visibility="visible"
+            android:background="@color/colorAll"
+            android:layout_width="match_parent"
+            android:layout_height="450dp">
+
+            <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+                android:id="@+id/indeterminate_progress_library"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"
+                style="@style/Widget.MaterialProgressBar.ProgressBar" />
+
+        </LinearLayout>
+
     <armored.g12matrickapp.Widgets.ExpandableGridView
         android:id="@+id/mainGrid"
         android:numColumns="2"
+        android:layoutAnimation="@anim/list_animation"
+        android:animateLayoutChanges="true"
         android:listSelector="#55d2d3d4"
         android:drawSelectorOnTop="true"
         android:scrollbars="none"

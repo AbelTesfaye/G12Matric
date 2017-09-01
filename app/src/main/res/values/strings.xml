@@ -20,4 +20,5 @@
     <string name="fb_text">Even if we are trying our best to make this app great, We need more insights and comments in our work to make it even better. So like us and message us.</string>
     <string name="fb_header">Connect with Facebook</string>
     <string name="connect">Connect</string>
+    <string name="title_activity_web_view">Loading…</string>
 </resources>

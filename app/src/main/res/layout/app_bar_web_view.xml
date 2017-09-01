@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:keepScreenOn="true"
+    android:layout_height="match_parent"
+    tools:context="armored.g12matrickapp.Activities.WebViewActivity">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <armored.g12matrickapp.Widgets.NestedWebView
+        android:id="@+id/sheetswebview"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        />
+
+    <LinearLayout
+        android:id="@+id/progresslayout"
+        android:gravity="center"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:visibility="gone"
+        android:background="@color/colorAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <me.zhanghai.android.materialprogressbar.MaterialProgressBar
+            android:id="@+id/indeterminate_progress_library"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            style="@style/Widget.MaterialProgressBar.ProgressBar" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="horizontal"
+        android:id="@+id/search_bar"
+        android:background="#f3f4f5"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/close"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_clear"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/mainEditText"
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/goup"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_go_upward"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/godown"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            app:srcCompat="@drawable/ic_go_downward"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ErrorSheet"
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:gravity="center"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:background="@color/colorAll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:padding="15dp"
+            android:text="Error occured while tring to load this paper"
+            android:layout_height="wrap_content" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:layout_width="wrap_content"
+            android:text="Go Back"
+            app:backgroundTint="#d3d4d5"
+            android:textColor="@color/colorAccent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/paperPageMenu"
+        android:background="#f3f4f5"
+        app:behavior_hideable="true"
+        android:clipToPadding="true"
+        android:layout_width="match_parent"
+        app:elevation="100dp"
+        app:behavior_peekHeight="0dp"
+        app:layout_behavior="@string/bottom_sheet_behavior"
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <HorizontalScrollView
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="3dp"
+                    android:scrollbars="none"
+                    android:scrollbarAlwaysDrawHorizontalTrack="false"
+                    android:nestedScrollingEnabled="true"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/themes"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/blackONWhite"
+                            android:layout_width="80dp"
+                            android:gravity="center"
+                            android:layout_margin="15dp"
+                            android:textSize="20sp"
+                            android:textColor="#000000"
+                            android:text="A"
+                            android:background="@drawable/whitebackimg"
+                            android:layout_height="match_parent" />
+
+                        <TextView
+                            android:id="@+id/darknight"
+                            android:layout_width="80dp"
+                            android:layout_margin="15dp"
+                            android:gravity="center"
+                            android:textSize="20sp"
+                            android:textColor="@color/colorAll"
+                            android:text="A"
+                            android:background="@drawable/nightmodeimg"
+                            android:layout_height="80dp" />
+
+                        <TextView
+                            android:id="@+id/oldpaperc"
+                            android:layout_width="80dp"
+                            android:gravity="center"
+                            android:layout_margin="15dp"
+                            android:textSize="20sp"
+                            android:textColor="#000"
+                            android:text="A"
+                            android:background="@drawable/oldpaperimg"
+                            android:layout_height="match_parent" />
+
+                        <TextView
+                            android:id="@+id/darkbluish"
+                            android:layout_width="80dp"
+                            android:gravity="center"
+                            android:layout_margin="15dp"
+                            android:textSize="20sp"
+                            android:textColor="@color/colorAll"
+                            android:text="A"
+                            android:background="@drawable/darkblue"
+                            android:layout_height="match_parent" />
+
+                        <TextView
+                            android:id="@+id/twilight"
+                            android:layout_width="80dp"
+                            android:gravity="center"
+                            android:layout_margin="15dp"
+                            android:textSize="20sp"
+                            android:textColor="@color/colorAll"
+                            android:text="A"
+                            android:background="@drawable/nightmodeimg"
+                            android:layout_height="match_parent" />
+
+
+                    </LinearLayout>
+
+                </HorizontalScrollView>
+
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:text="A"
+                        android:gravity="center"
+                        android:textSize="12sp"
+                        android:layout_height="match_parent" />
+
+                    <android.support.v7.widget.AppCompatSeekBar
+                        android:layout_width="0dp"
+                        android:id="@+id/sizesetterbar"
+                        android:minHeight="75px"
+                        android:maxHeight="75px"
+                        android:layout_weight="5"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="A"
+                        android:textSize="26sp"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/exit"
+                    android:text="Exit"
+                    android:drawablePadding="15dp"
+                    app:backgroundTint="#d3d4d5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </android.support.v7.widget.LinearLayoutCompat>
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_action_menu" />
+
+</android.support.design.widget.CoordinatorLayout>
