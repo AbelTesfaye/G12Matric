@@ -21,29 +21,27 @@ import android.os.Vibrator;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.support.design.widget.NavigationView;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
@@ -51,7 +49,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -64,9 +61,8 @@ import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
-import armored.g12matrickapp.Adapters.ChapterListAdapter;
-import armored.g12matrickapp.Adapters.ChapterListStructure;
 import armored.g12matrickapp.R;
 import armored.g12matrickapp.Utils.Constants;
 import armored.g12matrickapp.Utils.DbManager;
@@ -78,19 +74,23 @@ import static android.view.View.GONE;
 import static android.view.View.SYSTEM_UI_FLAG_HIDE_NAVIGATION;
 import static android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
 
-public class WebViewActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+/**
+ * Created by Falcon on 9/3/2017 :: 01:00 inside G12MatrickApp .
+ * ALL RIGHTS RECEIVED!
+ */
 
+public class QuizziWebActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     NestedScrollView bottomMenu;
     BottomSheetBehavior behavior;
 
     NestedWebView mainWebViewSheets;
     int Subject = -1;
-    int Year = -1;
     ArrayList<Integer> Unit;
     ArrayList<String> Contents;
     ArrayList<String> Answers;
+    ArrayList<Integer> Years;
     ArrayList<Integer> PreviouslyWorked;
     String theBigData = "";
     CountDownTimer mainTimer;
@@ -108,6 +108,9 @@ public class WebViewActivity extends AppCompatActivity
     LinearLayout search_bar;
 
     NavigationView mainNavView;
+
+    ArrayList<Integer> Grade11Units;
+    ArrayList<Integer> Grade12Units;
 
     @Override
     protected void onResume() {
@@ -145,7 +148,6 @@ public class WebViewActivity extends AppCompatActivity
             mainWebViewSheets.setVisibility(!show ? View.VISIBLE : GONE);
         }
     }
-
 
     void loadNavHeader(){
 
@@ -240,8 +242,6 @@ public class WebViewActivity extends AppCompatActivity
         });
     }
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -264,7 +264,7 @@ public class WebViewActivity extends AppCompatActivity
         txtName = (TextView) navHeader.findViewById(R.id.userName);
         txtWebsite = (TextView) navHeader.findViewById(R.id.userSchool);
         imgNavProfile = (AppCompatImageView) navHeader.findViewById(R.id.profilePic);
-        imgNavBackground = (AppCompatImageView) navHeader. findViewById(R.id.libBackgroundNav);
+        imgNavBackground = (AppCompatImageView) navHeader.findViewById(R.id.libBackgroundNav);
 
         loadNavHeader();
 
@@ -280,18 +280,18 @@ public class WebViewActivity extends AppCompatActivity
         search_bar = (LinearLayout) findViewById(R.id.search_bar);
 
 
-            blackOnWhite = (TextView) findViewById(R.id.blackONWhite);
-            darktheme = (TextView) findViewById(R.id.darknight);
-            oldtheme = (TextView) findViewById(R.id.oldpaperc);
-            darkblue = (TextView) findViewById(R.id.darkbluish);
-            seek = (AppCompatSeekBar) findViewById(R.id.sizesetterbar);
+        blackOnWhite = (TextView) findViewById(R.id.blackONWhite);
+        darktheme = (TextView) findViewById(R.id.darknight);
+        oldtheme = (TextView) findViewById(R.id.oldpaperc);
+        darkblue = (TextView) findViewById(R.id.darkbluish);
+        seek = (AppCompatSeekBar) findViewById(R.id.sizesetterbar);
 
-            setupMenu();
+        setupMenu();
 
         behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState == BottomSheetBehavior.STATE_COLLAPSED){
+                if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
                     fab.show();
                 }
             }
@@ -360,8 +360,8 @@ public class WebViewActivity extends AppCompatActivity
                         }
                     }
 
-
                 } catch (Exception e) {
+                    e.printStackTrace();
                 }
 
             }
@@ -383,271 +383,53 @@ public class WebViewActivity extends AppCompatActivity
             }
         });
 
-        try{
-            //Debug purpose
-            //Subject = 6;
-            //Year = 2005;
-            Subject = getIntent().getExtras().getInt("Subject" , 6);
-            Year = getIntent().getExtras().getInt("Year" , 2005);
-        } catch (Exception e){
-            Subject = -1;
-            Year = -1;
-            e.printStackTrace();
-        }
 
         if (mpbar.getIndeterminateDrawable() != null) {
             mpbar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
         }
         showProgress(true);
 
-        buildSheetsUI builder = new buildSheetsUI();
-        builder.execute(new String[]{"http://something.com/klr.php"});
-
-
-    }
-
-    private void startTimer(){
-
-        int times = 1;
-        times = Constants.getTimerDataForSubject(Subject);
-
-        mainTimer = new CountDownTimer(30 * 1000 * 60 * times, 1000) { //remove * 60 for debug
-            @Override
-            public void onTick(long l) {
-                try{getSupportActionBar().setSubtitle(milliSecondsToTimer(l));}catch (Exception e){e.printStackTrace();}
-            }
-
-            private void ad() {
-                AlertDialog.Builder b = new AlertDialog.Builder(WebViewActivity.this);
-                b.setTitle("Time's up");
-                b.setMessage("Sorry, You did not finish in time. Please try again to improve your mark");
-                b.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent a = new Intent(WebViewActivity.this, Subject_Choose.class);
-                        startActivity(a);
-                    }
-                });
-                b.show();
-            }
-
-            @Override
-            public void onFinish() {
-                if (didfinsh != 0) {
-                    getSupportActionBar().setTitle(Constants.getSubjectName(Subject) + " " + Year);
-                    try{getSupportActionBar().setSubtitle("");}catch (Exception e){e.printStackTrace();}
-                } else {
-                    if (!amoutdontshow) {
-                        if (!isPaused) {
-                            try {
-                                Vibrator v = (Vibrator) WebViewActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-                                v.vibrate(300);
-                                ad();
-                            } catch (Exception x) {
-                                x.printStackTrace();
-                            }
-                        } else {
-                            try {
-                                Vibrator v = (Vibrator) WebViewActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
-                                v.vibrate(300);
-                                Toast.makeText( WebViewActivity.this , "Your exam time has ended.", Toast.LENGTH_SHORT).show();
-                                Intent a = new Intent(WebViewActivity.this , Subject_Choose.class);
-                                startActivity(a);
-                            } catch (Exception d) {
-                                d.printStackTrace();
-                            }
-                        }
-                    }
-                }
-            }
-        }.start();
-    }
-
-    TextView darktheme;
-    TextView blackOnWhite;
-    TextView oldtheme;
-    TextView darkblue;
-    AppCompatSeekBar seek;
-
-    private void stopTimer(){
-        if (mainTimer != null) {
-            didfinsh = 1;
-            mainTimer.cancel();
-            mainTimer.onFinish();
-        }
-    }
-
-    private class buildSheetsUI extends AsyncTask<String , Void , String> {
-
-        @Override
-        protected String doInBackground(String... strings) {
-            DbManager db = new DbManager(WebViewActivity.this);
-            Unit = db.getIntArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_UNIT , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year , DbManager.COLUMN_QUESTION_NUM + " ASC");
-            Contents = db.getStringArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_CONTENT , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year , DbManager.COLUMN_QUESTION_NUM + " ASC");
-            Answers = db.getStringArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ANS , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year , DbManager.COLUMN_QUESTION_NUM + " ASC");
-
-            //Should build header before going to the array
-            InputStream input;
-            try {
-
-                theBigData += "<html><head><title>" + Constants.getSubjectName(Subject) + " " + Year + "</title>";
-               // String js1 = "function init_tags(){var i = document.getElementsByTagName(\"input\");for (var t = 0; t < i.length; t++){i[t].className += \" with-gap\";}}function evaluateandgive(){document.getElementById('EvaluateBtn').disabled=true;var ChoosedChoices = \"X\";var allInputs = document.getElementsByTagName('input');var allqnum = (allInputs.length - 1) / 4;for(var i = 1; i <= allqnum; i++){var choicesUnderQuestion = document.getElementsByName('choiceq' + i.toString());if(choicesUnderQuestion[0].checked){ChoosedChoices = ChoosedChoices + \"A\";} else if(choicesUnderQuestion[1].checked){ChoosedChoices = ChoosedChoices + \"B\";} else if(choicesUnderQuestion[2].checked){ChoosedChoices = ChoosedChoices + \"C\";} else if(choicesUnderQuestion[3].checked){ChoosedChoices = ChoosedChoices + \"D\";} else{ChoosedChoices = ChoosedChoices + \"X\";}}window.location.href = \"answers://\" + ChoosedChoices;}var answersArray = \"\";var RedColor=\"#ed1c24\";var GreenColor=\"#3bff2a\";var GrayColor =\"#788990\";var answered = 0;var xanswers = 0;var worked = 0;function setAnswersArray(array){answersArray = array;init_tags();}function evaluateforown(sub,year){document.getElementById('EvaluateBtn').disabled=true;var allInputs = document.getElementsByTagName('input');var allqnum = (allInputs.length - 1) / 4;for(var i = 1; i <= allqnum; i++){var choicesUnderQuestion = document.getElementsByName('choiceq' + i.toString());var ChoosedChoices = \"\";if(choicesUnderQuestion[0].checked){ChoosedChoices = ChoosedChoices + \"A\";}else if(choicesUnderQuestion[1].checked){ChoosedChoices = ChoosedChoices + \"B\";}else if(choicesUnderQuestion[2].checked){ChoosedChoices = ChoosedChoices + \"C\";}else if(choicesUnderQuestion[3].checked){ChoosedChoices = ChoosedChoices + \"D\";}else{ChoosedChoices = ChoosedChoices + \"X\";worked++;}var choiceABackground = document.getElementById(sub+year+i.toString()+'a');var choiceBBackground = document.getElementById(sub+year+i.toString()+'b');var choiceCBackground = document.getElementById(sub+year+i.toString()+'c');var choiceDBackground = document.getElementById(sub+year+i.toString()+'d');if(ChoosedChoices != answersArray[i] && answersArray[i] != \"X\"){switch(ChoosedChoices){case \"A\":choiceABackground.style.backgroundColor=RedColor;break;case \"B\":choiceBBackground.style.backgroundColor=RedColor;break;case \"C\":choiceCBackground.style.backgroundColor=RedColor;break;case \"D\":choiceDBackground.style.backgroundColor=RedColor;break;case \"X\":choiceABackground.style.backgroundColor=RedColor;choiceBBackground.style.backgroundColor=RedColor;choiceCBackground.style.backgroundColor=RedColor;choiceDBackground.style.backgroundColor=RedColor;break;}}else if(answersArray[i] == \"X\"){choiceABackground.style.backgroundColor=GrayColor;choiceBBackground.style.backgroundColor=GrayColor;choiceCBackground.style.backgroundColor=GrayColor;choiceDBackground.style.backgroundColor=GrayColor;xanswers++;} else if(ChoosedChoices == answersArray[i] && answersArray[i] != \"X\"){answered++;switch(ChoosedChoices){case \"A\":choiceABackground.style.backgroundColor=GreenColor;break;case \"B\":choiceBBackground.style.backgroundColor=GreenColor;break;case \"C\":choiceCBackground.style.backgroundColor=GreenColor;break;case \"D\":choiceDBackground.style.backgroundColor=GreenColor;break;case \"X\":choiceABackground.style.backgroundColor=GreenColor;choiceBBackground.style.backgroundColor=GreenColor;choiceCBackground.style.backgroundColor=GreenColor;choiceDBackground.style.backgroundColor=GreenColor;break;}}}worked = allqnum - worked;allqnum = allqnum - xanswers;presentMeData(allqnum , answered , worked);}function presentMeData(all , answered , worked){window.location.href = \"popupg12://\" + all + \";\" + answered + \";\" + worked;};function changeStyle(mode){switch (mode){case 0:document.getElementsByTagName('body')[0].style.backgroundColor = \"#222\";document.getElementsByTagName('body')[0].style.color = \"#eee\";break;case 1:document.getElementsByTagName('body')[0].style.backgroundColor = \"#fae9ab\";document.getElementsByTagName('body')[0].style.color = \"#000\";break;case 2:document.getElementsByTagName('body')[0].style.backgroundColor = \"#0E535B\";document.getElementsByTagName('body')[0].style.color = \"#fff\";break;case 3:document.getElementsByTagName('body')[0].style.backgroundColor = \"#ffffff\";document.getElementsByTagName('body')[0].style.color = \"#000\";break;}}";
-                theBigData += "<script src=\"js/core.js\"></script><link href=\"css/materialize.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen,projection\"/><link href=\"css/style.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen,projection\"/><style></style></head><body>";
-
-                /*The ad banner*/
-                theBigData += "<div class=\"row center\"><div class=\"col s12 m7 center\"><div class=\"card white darken-1 center\"><div class=\"card-image\" style=\"width:100%;height:200px;\"><img src=\"lv.jpg\" style=\"width:100%;height:100%;\"><span class=\"card-title\">ETMDB</span><a class=\"btn-floating halfway-fab waves-effect waves-light red white-text\" href=\"traveltohttp://facebook.com\">Go</a></div><div class=\"card-content black-text\"><p>We are proud of ethiopian movies. And we plan to make them big. Join us and help to make the database for Ethiopian movies.</p></div></div></div></div><div style=\"margin:2%;padding:1%\">";
-
-                for (int i = 0; i < Contents.size(); i++) {
-                    theBigData += Contents.get(i) + "\n";
-                }
-
-                //Debug purpose
-                /*
-                Log.e("XXXX" , Integer.toString(Contents.size()));
-                Log.e("XXXX" , Contents.get(0));
-                Log.e("XXXX" , Integer.toString(Answers.size()));
-
-                Log.e("XXXX" , Integer.toString(Unit.size()));
-                Log.e("XXXX" , Integer.toString(Unit.get(0)));
-                */
-
-                Log.e("XXXX" , Answers.get(0));
-
-                //after the array then comes evaluate button and js codes
-                theBigData += "<center><input class=\"btn-flat waves-effect waves-light blue white-text\" style=\"margin-top:2%;margin-bottom:2%;\" type=Button id=EvaluateBtn value=Evaluate onclick=evaluateforown(\"" + Constants.getSubjectNameForEvaluation(Subject) + "\",\"" + Year + "\") ></center></div></body></html>";
-                //Log.e("XXXX" , theBigData);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-            return theBigData;
+        try{
+            //Debug purpose
+            //Subject = 6;
+            //Year = 2005;
+            Subject = getIntent().getExtras().getInt("Subject" , 6);
+            Grade11Units = getIntent().getExtras().getIntegerArrayList("G11Chapters");
+            Grade12Units = getIntent().getExtras().getIntegerArrayList("G12Chapters");
+        } catch (Exception e){
+            Subject = -1;
+            e.printStackTrace();
         }
 
-        @SuppressLint("SetJavaScriptEnabled")
-        @Override
-        protected void onPostExecute(String s) {
-            try{
-                mainWebViewSheets.getSettings().setJavaScriptEnabled(true);
-                mainWebViewSheets.getSettings().setBuiltInZoomControls(true);
-                mainWebViewSheets.getSettings().setDisplayZoomControls(false);
-                mainWebViewSheets.getSettings().setAppCacheEnabled(true);
-                mainWebViewSheets.getSettings().setAllowFileAccess(true);
-                mainWebViewSheets.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-                mainWebViewSheets.getSettings().setSupportZoom(true);
+        if(Grade11Units == null) {
+            if(Subject != -1) {
+                //Currently The database has all chapters as value 20
+                /*int g11units = Constants.getHowManyUnitsSubjectHasG11(Subject);
+                for (int x = 1; x <= g11units; x++) {
+                    Grade11Units.add(x);
+                }*/
 
-                mainWebViewSheets.setWebViewClient(new WebViewClient(){
-                    @Override
-                    public void onPageFinished(WebView view, String url) {
-                        super.onPageFinished(view, url);
-                        try{
-                            showProgress(false);
-                            startTimer();
-                            String ansString = "";
-                            for(String s : Answers){
-                                ansString += s;
-                            }
-                            mainWebViewSheets.loadUrl("javascript:setAnswersArray('" + ansString + "')");
-                        }catch (Exception e){e.printStackTrace();}
-                    }
+                //For the time being
+                Grade11Units.add(20);
 
-                    @Override
-                    public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                        //return super.shouldOverrideUrlLoading(view, url);
-                        if(url.contains("answers://")){
-                            Log.e("XXXX" , url);
-                            parseAnswers(url);
-                            stopTimer();
-                        } else if(url.contains("popupg12://")) {
-                            Log.e("XXXX" , url);
-                            makeAlertDialogFromJs(url);
-                            stopTimer();
-                        } else if(url.contains("traveltohttp://")){
-                            String data = url;
-                            data = data.replace("traveltohttp://" , "");
-                            data = data.replace("/" , "");
-
-                            Log.e("XXXX" , data);
-
-                            Intent browserIntetn = new Intent(Intent.ACTION_VIEW , Uri.parse("http://" + data));
-                            startActivity(browserIntetn);
-
-                        } else if(url.contains("traveltohttps://")){
-                            String data = url;
-                            data = data.replace("traveltohttps://" , "");
-                            data = data.replace("/" , "");
-
-                            Log.e("XXXX" , data);
-
-                            Intent browserIntetn = new Intent(Intent.ACTION_VIEW , Uri.parse("https://" + data));
-                            startActivity(browserIntetn);
-                        } else if(url.contains("showmyhint://")){
-                            String data = url;
-                            data = data.replace("showmyhint://" , "");
-                            data = data.replace("/" , "");
-
-                            Log.e("XXXX" , data);
-
-                        }
-                        else {
-                            Log.e("XXXX" , url);
-                            //view.loadUrl(url);
-                        }
-                        return true;
-                    }
-
-                    @Override
-                    public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                        if(url.contains("answers://")){
-                            // Snackbar.make(view , url , Snackbar.LENGTH_SHORT).show();
-                        }else {
-                            super.onPageStarted(view, url, favicon);
-                        }
-                    }
-
-                    @Override
-                    public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-                        super.onReceivedError(view, request, error);
-                    }
-                });
-
-                mainWebViewSheets.setOnLongClickListener(new View.OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view) {
-                        Toast.makeText(WebViewActivity.this, "Long click is disabled", Toast.LENGTH_SHORT).show();
-                        return true;
-                    }
-                });
-
-                mainWebViewSheets.setLongClickable(false);
-                mainWebViewSheets.setHapticFeedbackEnabled(false);
-
-                mainWebViewSheets.setWebChromeClient(new WebChromeClient(){
-                    @Override
-                    public void onReceivedTitle(WebView view, String title) {
-                        super.onReceivedTitle(view, title);
-                        try{ getSupportActionBar().setTitle(title); }catch (Exception e){e.printStackTrace();}
-                    }
-
-                    @Override
-                    public void onProgressChanged(WebView view, int newProgress) {
-                        super.onProgressChanged(view, newProgress);
-                    }
-                });
-
-
-                if(Subject == -1 || Year == -1){
-                    //Error occured take them back to the home page
-                    errorLayout.setVisibility(View.VISIBLE);
-                }else{
-                    if(!s.equals("null")){
-                        mainWebViewSheets.loadDataWithBaseURL("file:///android_asset/" , s , "text/html" , "UTF-8" , "");
-                        mainWebViewSheets.getSettings().setDomStorageEnabled(true);
-                    }
-                }
-
-            } catch (Exception e){
-                Log.e("XXXX" , e.getStackTrace().toString());
             }
         }
+
+        if(Grade12Units == null){
+            if(Subject != -1) {
+                //Currently The database has all chapters as value 20
+               /* int g12units = Constants.getHowManyUnitsSubjectHasG12(Subject);
+                for (int x = 1; x <= g12units; x++) {
+                    Grade12Units.add(x);
+                }*/
+
+                //For the time being
+                Grade12Units.add(20);
+            }
+        }
+
+        shuffle_build object = new shuffle_build();
+        object.execute();
     }
 
     private void makeAlertDialogFromJs(String data){
@@ -668,6 +450,149 @@ public class WebViewActivity extends AppCompatActivity
         });
         builder.show();
         mainWebViewSheets.loadUrl("javascript:evaluateandgive()");
+    }
+
+    public void actionOnBottomMenu(int i){
+        switch (i){
+            case Constants.COLLAPSE_BOTTOM_MENU:
+                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                break;
+            case Constants.EXPANDE_BOTTOM_MENU:
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                break;
+            case Constants.HIDE_BOTTOM_MENU:
+                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                break;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+                actionOnBottomMenu(Constants.COLLAPSE_BOTTOM_MENU);
+            else {
+
+                AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
+                exitQ.setTitle("Are you sure?");
+                exitQ.setMessage("Are you sure you want to exit to the homepage? All your progress will be lost.");
+                exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startActivity(new Intent(QuizziWebActivity.this , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                        overridePendingTransition(0, 0);
+                    }
+                }).setNegativeButton("No", null);
+                exitQ.show();
+
+            }
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.web_view_q, menu);
+        return true;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if(ev.getAction() == MotionEvent.ACTION_DOWN){
+            if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                Rect outside = new Rect();
+                bottomMenu.getGlobalVisibleRect(outside);
+
+                if(!outside.contains((int) ev.getRawX() , (int) ev.getRawY())){
+                    actionOnBottomMenu(Constants.COLLAPSE_BOTTOM_MENU);
+                }
+
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private void SearchInSheet(boolean show){
+        search_bar.setVisibility(show ? View.VISIBLE : GONE);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.search_in_sheet) {
+            SearchInSheet(true);
+            return true;
+        } else if(id == R.id.evaluate_all){
+            mainWebViewSheets.loadUrl("javascript:evaluate_from_menu();");
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_change_sub) {
+            AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
+            exitQ.setTitle("Are you sure?");
+            exitQ.setMessage("Are you sure you want to exit to the homepage? All your progress will be lost.");
+            exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startActivity(new Intent(QuizziWebActivity.this , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
+                    overridePendingTransition(0, 0);
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    deselectNavMenu();
+                }
+            });
+            exitQ.show();
+        } else if (id == R.id.nav_quizzi) {
+            AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
+            exitQ.setTitle("Are you sure?");
+            exitQ.setMessage("Are you sure you want to exit to the quizzipage? All your progress will be lost.");
+            exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    startActivity(new Intent(QuizziWebActivity.this , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("alsoGoTo" , 1));
+                    overridePendingTransition(0, 0);
+                }
+            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    deselectNavMenu();
+                }
+            });
+            exitQ.show();
+        } else if (id == R.id.nav_my_progress) {
+
+        } else if (id == R.id.nav_challenge) {
+
+        } else if (id == R.id.euee_result) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     public String milliSecondsToTimer(long milliseconds) {
@@ -703,209 +628,82 @@ public class WebViewActivity extends AppCompatActivity
         return finalTimerString;
     }
 
-    public void actionOnBottomMenu(int i){
-        switch (i){
-            case Constants.COLLAPSE_BOTTOM_MENU:
-                behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-                break;
-            case Constants.EXPANDE_BOTTOM_MENU:
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                break;
-            case Constants.HIDE_BOTTOM_MENU:
-                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                break;
-        }
-    }
+    private void startTimer(){
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-                actionOnBottomMenu(Constants.COLLAPSE_BOTTOM_MENU);
-            else {
+        double times = 1.0;
+        times = (20 * Constants.getTimerDataForSubject(Subject)) / Constants.giveMeQuestionNumber(Subject);
 
-                AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
-                exitQ.setTitle("Are you sure?");
-                exitQ.setMessage("Are you sure you want to exit to the homepage? All your progress will be lost.");
-                exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startActivity(new Intent(WebViewActivity.this , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                        overridePendingTransition(0, 0);
-                    }
-                }).setNegativeButton("No", null);
-                exitQ.show();
-
-            }
-        }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.web_view, menu);
-        return true;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        if(ev.getAction() == MotionEvent.ACTION_DOWN){
-            if(behavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
-                Rect outside = new Rect();
-                bottomMenu.getGlobalVisibleRect(outside);
-
-                if(!outside.contains((int) ev.getRawX() , (int) ev.getRawY())){
-                    actionOnBottomMenu(Constants.COLLAPSE_BOTTOM_MENU);
-                }
-
-            }
-        }
-        return super.dispatchTouchEvent(ev);
-    }
-
-    private void SearchInSheet(boolean show){
-        search_bar.setVisibility(show ? View.VISIBLE : GONE);
-    }
-
-    private void showFilterDialog(){
-        int unitInG11 = Constants.getHowManyUnitsSubjectHasG11(Subject);
-        int unitInG12 = Constants.getHowManyUnitsSubjectHasG12(Subject);
-
-        LayoutInflater inflater = this.getLayoutInflater();
-        View dialogV = inflater.inflate(R.layout.filter_dialog_view , null);
-
-        ArrayList<ChapterListStructure> g11c = new ArrayList<>();
-        ArrayList<ChapterListStructure> g12c = new ArrayList<>();
-
-        ListView g11list = (ListView) dialogV.findViewById(R.id.g11listview);
-        ListView g12list = (ListView) dialogV.findViewById(R.id.g12listview);
-
-        for(int i = 1;i <= unitInG11;i++){
-            ChapterListStructure x = new ChapterListStructure(i , false);
-            g11c.add(x);
-        }
-
-        for(int i = 1;i <= unitInG12;i++){
-            ChapterListStructure x = new ChapterListStructure(i , false);
-            g12c.add(x);
-        }
-
-        final ChapterListAdapter adapter = new ChapterListAdapter(this , R.layout.chapters_list_item , g11c);
-        final ChapterListAdapter adapter2 = new ChapterListAdapter(this , R.layout.chapters_list_item , g12c);
-
-        g11list.setAdapter(adapter);
-        g12list.setAdapter(adapter2);
-
-        AlertDialog.Builder di = new AlertDialog.Builder(this);
-        di.setTitle("Filter");
-        di.setView(dialogV);
-        di.setPositiveButton("Filter", new DialogInterface.OnClickListener() {
+        mainTimer = new CountDownTimer((int)(30 * 1000 * 60 * times), 1000) { //remove * 60 for debug
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Grade11FilterUnits = adapter.giveMeChoosedChapters();
-                Grade12FilterUnits =  adapter2.giveMeChoosedChapters();
-                FilterAndBuild filteredBuild = new FilterAndBuild();
-                filteredBuild.execute(new String[]{"http://something.com/klr.php"});
+            public void onTick(long l) {
+                try{getSupportActionBar().setSubtitle(milliSecondsToTimer(l));}catch (Exception e){e.printStackTrace();}
             }
-        }).setNegativeButton("Cancel" , null);
-        di.show();
 
+            private void ad() {
+                AlertDialog.Builder b = new AlertDialog.Builder(QuizziWebActivity.this);
+                b.setTitle("Time's up");
+                b.setMessage("Sorry, You did not finish in time. Please try again to improve your mark");
+                b.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent a = new Intent(QuizziWebActivity.this, Subject_Choose.class);
+                        startActivity(a);
+                    }
+                });
+                b.show();
+            }
+
+            @Override
+            public void onFinish() {
+                if (didfinsh != 0) {
+                    getSupportActionBar().setTitle(Constants.getSubjectName(Subject) + " Quizzi");
+                    try{getSupportActionBar().setSubtitle("");}catch (Exception e){e.printStackTrace();}
+                } else {
+                    if (!amoutdontshow) {
+                        if (!isPaused) {
+                            try {
+                                Vibrator v = (Vibrator) QuizziWebActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+                                v.vibrate(300);
+                                ad();
+                            } catch (Exception x) {
+                                x.printStackTrace();
+                            }
+                        } else {
+                            try {
+                                Vibrator v = (Vibrator) QuizziWebActivity.this.getSystemService(Context.VIBRATOR_SERVICE);
+                                v.vibrate(300);
+                                Toast.makeText( QuizziWebActivity.this , "Your exam time has ended.", Toast.LENGTH_SHORT).show();
+                                Intent a = new Intent(QuizziWebActivity.this , Subject_Choose.class);
+                                startActivity(a);
+                            } catch (Exception d) {
+                                d.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            }
+        }.start();
     }
 
-    ArrayList<Integer> Grade11FilterUnits;
-    ArrayList<Integer> Grade12FilterUnits;
+    TextView darktheme;
+    TextView blackOnWhite;
+    TextView oldtheme;
+    TextView darkblue;
+    AppCompatSeekBar seek;
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.search_in_sheet) {
-            SearchInSheet(true);
-            return true;
-        } else if(id == R.id.evaluate_all){
-            mainWebViewSheets.loadUrl("javascript:evaluate_from_menu();");
-            return true;
-        } else if(id == R.id.filter){
-            if(Subject != Constants.ENGLISH && Subject != Constants.CIVICS && Subject != Constants.SAT){showFilterDialog();}
-            else{
-                Snackbar snackbar = Snackbar.make(mainWebViewSheets , "Filter is not available for " + Constants.getSubjectName(Subject) , Snackbar.LENGTH_SHORT);
-                snackbar.getView().setBackgroundColor(ContextCompat.getColor(this , R.color.colorPrimary));
-                snackbar.show();
-            }
+    private void stopTimer(){
+        if (mainTimer != null) {
+            didfinsh = 1;
+            mainTimer.cancel();
+            mainTimer.onFinish();
         }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_change_sub) {
-            AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
-            exitQ.setTitle("Are you sure?");
-            exitQ.setMessage("Are you sure you want to exit to the homepage? All your progress will be lost.");
-            exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    startActivity(new Intent(WebViewActivity.this , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK));
-                    overridePendingTransition(0, 0);
-                }
-            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    deselectNavMenu();
-                }
-            });
-            exitQ.show();
-        } else if (id == R.id.nav_quizzi) {
-            AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
-            exitQ.setTitle("Are you sure?");
-            exitQ.setMessage("Are you sure you want to exit to the quizzipage? All your progress will be lost.");
-            exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    startActivity(new Intent(WebViewActivity.this , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("alsoGoTo" , 1));
-                    overridePendingTransition(0, 0);
-                }
-            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    deselectNavMenu();
-                }
-            });
-            exitQ.show();
-        } else if (id == R.id.nav_my_progress) {
-
-        } else if (id == R.id.nav_challenge) {
-
-        } else if (id == R.id.euee_result) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
     }
 
     private class parseTheAnswer extends AsyncTask<String , Void , String> {
         @Override
         protected String doInBackground(String... strings) {
             try{
-                DbManager db = new DbManager(WebViewActivity.this);
+                DbManager db = new DbManager(QuizziWebActivity.this);
                 String data = strings[0];
                 data = data.replace("answers://" , "");
                 data = data.replace("/" , "");
@@ -917,17 +715,17 @@ public class WebViewActivity extends AppCompatActivity
                         int unit = Unit.get(i);
                         String choice = String.valueOf(data.charAt(i));
 
-                        int question_tested = db.getSingleInt(DbManager.TABLE_NAME_TopicWise, DbManager.COLUMN_QUESTION_TESTED, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit);
-                        int question_answered = db.getSingleInt(DbManager.TABLE_NAME_TopicWise, DbManager.COLUMN_QUESTION_ANSWERED, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit);
-                        int attempted_before = db.getSingleInt(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ATTEMPTED_BEFORE , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
-                        int answered_before = db.getSingleInt(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ANSWERED_BEFORE , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                        int question_tested = db.getSingleInt(DbManager.TABLE_NAME_TopicWise, DbManager.COLUMN_QUESTION_TESTED, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit);
+                        int question_answered = db.getSingleInt(DbManager.TABLE_NAME_TopicWise, DbManager.COLUMN_QUESTION_ANSWERED, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit);
+                        int attempted_before = db.getSingleInt(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ATTEMPTED_BEFORE , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                        int answered_before = db.getSingleInt(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ANSWERED_BEFORE , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                         if (!choice.equals("X")) {
                             //the user have choosed something!
                             if (question_answered != -1 && question_tested != -1) {
                                 if (attempted_before == 0) {
                                     ContentValues cv = new ContentValues();
                                     cv.put(DbManager.COLUMN_ATTEMPTED_BEFORE, 1);
-                                    db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                    db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                                     //Now its attempted
 
                                     if(answered_before == 0){
@@ -937,7 +735,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered++;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 1);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
 
                                         } else {
                                             //wrong answer
@@ -951,7 +749,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered--;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 0);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                                         }
                                     }
                                     question_tested++;
@@ -963,7 +761,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered++;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 1);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
 
                                         } else {
                                             //wrong answer
@@ -977,14 +775,14 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered--;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 0);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                                         }
                                     }
                                 }
                             } else{
                                 //no data under the specific unit subject year...
                                 ContentValues cv2 = new ContentValues();
-                                cv2.put(DbManager.COLUMN_YEAR , Year);
+                                cv2.put(DbManager.COLUMN_YEAR , Years.get(i));
                                 cv2.put(DbManager.COLUMN_SUBJECT , Subject);
                                 cv2.put(DbManager.COLUMN_UNIT , unit);
                                 cv2.put(DbManager.COLUMN_QUESTION_TESTED , 0);
@@ -997,7 +795,7 @@ public class WebViewActivity extends AppCompatActivity
                                 if (attempted_before == 0) {
                                     ContentValues cv = new ContentValues();
                                     cv.put(DbManager.COLUMN_ATTEMPTED_BEFORE, 1);
-                                    db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                    db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                                     //Now its attempted
 
                                     question_tested++;
@@ -1008,7 +806,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered++;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 1);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
 
                                         } else {
                                             //wrong answer
@@ -1022,7 +820,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered--;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 0);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                                         }
                                     }
                                 } else {
@@ -1033,7 +831,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered++;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 1);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
 
                                         } else {
                                             //wrong answer
@@ -1047,7 +845,7 @@ public class WebViewActivity extends AppCompatActivity
                                             question_answered--;
                                             ContentValues cv3 = new ContentValues();
                                             cv3.put(DbManager.COLUMN_ANSWERED_BEFORE, 0);
-                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
+                                            db.updateDataInsideDb(DbManager.TABLE_NAME_Questions, cv3, DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit + " AND " + DbManager.COLUMN_QUESTION_NUM + " = " + i);
                                         }
                                     }
                                 }
@@ -1056,13 +854,13 @@ public class WebViewActivity extends AppCompatActivity
                         }
 
                         ContentValues cvmain = new ContentValues();
-                        cvmain.put(DbManager.COLUMN_YEAR , Year);
+                        cvmain.put(DbManager.COLUMN_YEAR , Years.get(i));
                         cvmain.put(DbManager.COLUMN_SUBJECT , Subject);
                         cvmain.put(DbManager.COLUMN_UNIT , unit);
                         cvmain.put(DbManager.COLUMN_QUESTION_TESTED , question_tested);
                         cvmain.put(DbManager.COLUMN_QUESTION_ANSWERED , question_answered);
 
-                        db.updateDataInsideDb(DbManager.TABLE_NAME_TopicWise , cvmain , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + " AND " + DbManager.COLUMN_UNIT + " = " + unit);
+                        db.updateDataInsideDb(DbManager.TABLE_NAME_TopicWise , cvmain , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Years.get(i) + " AND " + DbManager.COLUMN_UNIT + " = " + unit);
 
                     }
                     return "K";
@@ -1084,7 +882,6 @@ public class WebViewActivity extends AppCompatActivity
         }
     }
 
-
     private int parseAnswers(String data){
         parseTheAnswer ans = new parseTheAnswer();
         ans.execute(new String[]{data});
@@ -1092,46 +889,62 @@ public class WebViewActivity extends AppCompatActivity
     }
 
 
-    /*Filtered Data*/
-    private class FilterAndBuild extends AsyncTask<String , Void , String> {
+    //THE MAIN THING :p
+    private class shuffle_build extends AsyncTask<String , Void , String> {
 
         @Override
         protected String doInBackground(String... strings) {
-            DbManager db = new DbManager(WebViewActivity.this);
+            DbManager db = new DbManager(QuizziWebActivity.this);
 
             String dbWhereAddon = "";
             boolean dbWhereAddonFirst = true;
             boolean db2WhereAddonFirst = true;
             String db2WhereAddon = "";
 
-            for(int y = 0; y < Grade11FilterUnits.size();y++){
+            for(int y = 0; y < Grade11Units.size();y++){
                 if(dbWhereAddonFirst) {
-                    dbWhereAddon += " AND " + DbManager.COLUMN_UNIT + " = " + 1100 + Grade11FilterUnits.get(y);
+                    dbWhereAddon += " AND " + DbManager.COLUMN_UNIT + " = " + 11 + Grade11Units.get(y);
                     dbWhereAddonFirst = false;
                 } else{
-                    dbWhereAddon += " OR " + DbManager.COLUMN_UNIT + " = " + 1100 + Grade11FilterUnits.get(y);
+                    dbWhereAddon += " OR " + DbManager.COLUMN_UNIT + " = " + 11 + Grade11Units.get(y);
                 }
             }
 
-            for(int z = 0; z < Grade12FilterUnits.size(); z++){
+            for(int z = 0; z < Grade12Units.size(); z++){
                 if(db2WhereAddonFirst) {
-                    db2WhereAddon += " AND " + DbManager.COLUMN_UNIT + " = " + 1200 + Grade12FilterUnits.get(z);
+                    db2WhereAddon += " AND " + DbManager.COLUMN_UNIT + " = " + 12 + Grade12Units.get(z);
                     db2WhereAddonFirst = false;
                 } else{
-                    db2WhereAddon += " OR " + DbManager.COLUMN_UNIT + " = " + 1200 + Grade12FilterUnits.get(z);
+                    db2WhereAddon += " OR " + DbManager.COLUMN_UNIT + " = " + 12 + Grade12Units.get(z);
                 }
             }
 
-            Unit = db.getIntArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_UNIT , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
-            Contents = db.getStringArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_CONTENT , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
-            Answers = db.getStringArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ANS , DbManager.COLUMN_SUBJECT + " = " + Subject + " AND " + DbManager.COLUMN_YEAR + " = " + Year + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
+            String allYearsDb = DbManager.COLUMN_YEAR + " = 2005 OR " + DbManager.COLUMN_YEAR + " = 2006 OR " + DbManager.COLUMN_YEAR + " = 2007 OR " + DbManager.COLUMN_YEAR + " = 2008 OR " + DbManager.COLUMN_YEAR + " = 2009";
+
+            Unit = db.getIntArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_UNIT , DbManager.COLUMN_SUBJECT + " = " + Subject + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
+            Contents = db.getStringArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_CONTENT , DbManager.COLUMN_SUBJECT + " = " + Subject + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
+            Answers = db.getStringArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_ANS , DbManager.COLUMN_SUBJECT + " = " + Subject + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
+            Years = db.getIntArray(DbManager.TABLE_NAME_Questions , DbManager.COLUMN_YEAR , DbManager.COLUMN_SUBJECT + " = " + Subject + dbWhereAddon + db2WhereAddon, DbManager.COLUMN_QUESTION_NUM + " ASC");
+
+            //Now remove as much items needed from the arraylists above to make them at the size [20]
+            int initialUnitSize = Unit.size();
+            int howManyItemsToRemove = initialUnitSize - 20;
+            Random itemToRemove = new Random();
+            for(int remove = 0; remove < howManyItemsToRemove; remove++){
+                //so basically everytime generate a random number from 0 - remove and remove that item from all the lists above
+                int randomNumber = itemToRemove.nextInt(initialUnitSize - remove);
+                Unit.remove(randomNumber);
+                Contents.remove(randomNumber);
+                Answers.remove(randomNumber);
+                Years.remove(randomNumber);
+            }
 
             //Should build header before going to the array
             InputStream input;
             try {
 
                 theBigData = "";
-                theBigData += "<html><head><title>" + Constants.getSubjectName(Subject) + " " + Year + "</title>";
+                theBigData += "<html><head><title>" + Constants.getSubjectName(Subject) + " Quizzi </title>";
                 theBigData += "<script src=\"js/core.js\"></script><link href=\"css/materialize.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen,projection\"/><link href=\"css/style.css\" type=\"text/css\" rel=\"stylesheet\" media=\"screen,projection\"/><style></style></head><body>";
 
                 /*The ad banner*/
@@ -1154,7 +967,7 @@ public class WebViewActivity extends AppCompatActivity
                 Log.e("XXXX" , Answers.get(0));
 
                 //after the array then comes material evaluate button
-                theBigData += "<center><input class=\"btn-flat waves-effect waves-light blue white-text\" style=\"margin-top:2%;margin-bottom:2%;\" type=Button id=EvaluateBtn value=Evaluate onclick=evaluateforown(\"" + Constants.getSubjectNameForEvaluation(Subject) + "\",\"" + Year + "\") ></center></div></body></html>";
+                theBigData += "<center><input class=\"btn-flat waves-effect waves-light blue white-text\" style=\"margin-top:2%;margin-bottom:2%;\" type=Button id=EvaluateBtn value=Evaluate onclick=evaluateforown(\"" + Constants.getSubjectNameForEvaluation(Subject) + "\",\"1000\") ></center></div></body></html>";
                 //Log.e("XXXX" , theBigData);
             } catch (Exception e){
                 e.printStackTrace();
@@ -1255,7 +1068,7 @@ public class WebViewActivity extends AppCompatActivity
                 mainWebViewSheets.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View view) {
-                        Toast.makeText(WebViewActivity.this, "Long click is disabled", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(QuizziWebActivity.this, "Long click is disabled", Toast.LENGTH_SHORT).show();
                         return true;
                     }
                 });
@@ -1276,8 +1089,7 @@ public class WebViewActivity extends AppCompatActivity
                     }
                 });
 
-
-                if(Subject == -1 || Year == -1){
+                if(Subject == -1){
                     //Error occured take them back to the home page
                     errorLayout.setVisibility(View.VISIBLE);
                 }else{
@@ -1292,6 +1104,11 @@ public class WebViewActivity extends AppCompatActivity
             }
         }
     }
+
+
+
+
+
 
 
 

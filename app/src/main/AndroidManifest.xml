@@ -16,7 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Activities.subject_Choose"
+            android:name=".Activities.Subject_Choose"
             android:configChanges="orientation|screenSize"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
@@ -30,6 +30,14 @@
             android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_web_view"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
+
+        <activity
+            android:name=".Activities.QuizziWebActivity"
+            android:configChanges="orientation|screenSize"
+            android:label="@string/title_activity_web_view"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
     </application>
 
 </manifest>

@@ -8,10 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -30,13 +27,11 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -49,13 +44,12 @@ import armored.g12matrickapp.Adapters.ChooserArrayAdapter;
 import armored.g12matrickapp.Fragments.Choose_Subject_Fragment;
 import armored.g12matrickapp.Fragments.Quizzi_Fragment;
 import armored.g12matrickapp.R;
-import armored.g12matrickapp.Utils.Constants;
 import armored.g12matrickapp.Utils.Functions;
 import armored.g12matrickapp.Widgets.ExpandableGridView;
 
 import static android.view.View.GONE;
 
-public class subject_Choose extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class Subject_Choose extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -186,6 +180,7 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
         secondaryToolbar.setLayoutParams(params);
     }
 
+    int alsoGoTo = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -226,10 +221,25 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
 
         loadNavHeader();
 
-        navItemIndex = 0;
-        CURRENT_TAG = TAG_CHANGE_SUBJECT;
-        navigationView.getMenu().getItem(0).setChecked(true);
-        loadChoosedFragment();
+        try {
+            alsoGoTo = getIntent().getExtras().getInt("alsoGoTo" , 0);
+        } catch (Exception e){
+            alsoGoTo = 0;
+            e.printStackTrace();
+        }
+
+        if(alsoGoTo == 0) {
+            navItemIndex = 0;
+            CURRENT_TAG = TAG_CHANGE_SUBJECT;
+            navigationView.getMenu().getItem(0).setChecked(true);
+            loadChoosedFragment();
+        } else {
+            navItemIndex = alsoGoTo;
+            CURRENT_TAG = getTagFromIndex(alsoGoTo);
+            navigationView.getMenu().getItem(alsoGoTo).setChecked(true);
+            loadChoosedFragment();
+        }
+
 
         container_one = (NestedScrollView) findViewById(R.id.container_one);
         container_two = (NestedScrollView) findViewById(R.id.container_two);
@@ -241,6 +251,23 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
 
     public void SetTitleFromFragment(String title){
         getSupportActionBar().setTitle(title);
+    }
+
+    private String getTagFromIndex(int index){
+        switch (index){
+            case 0:
+                return TAG_CHANGE_SUBJECT;
+            case 1:
+                return TAG_QUIZZI;
+            case 2:
+                return TAG_MY_PROGRESS;
+            case 3:
+                return TAG_CHALLENGES;
+            case 4:
+                return TAG_EUEE_RESULT;
+            default:
+                return TAG_CHANGE_SUBJECT;
+        }
     }
 
     public void SetSubTitleFromFragment(String title){
@@ -327,11 +354,16 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
         }
     }
 
+    //This will be used inside onbackpressed to go back from years to subjects on mainPage
+    boolean amOnYearsPart = false;
+    //This will be used inside onbackpressed to go back from chapters to subjects on quizzi
+    boolean amOnChaptersPart = false;
 
     private void setToolbarTitle(){
         getSupportActionBar().setTitle(activityTitles[navItemIndex]);
     }
-
+    public void setAmOnYearsPart(boolean b) { amOnYearsPart = b; }
+    public void setAmOnChaptersPart(boolean b) { amOnChaptersPart = b; }
 
     private void selectNavMenu(){
         navigationView.getMenu().getItem(navItemIndex).setChecked(true);
@@ -348,45 +380,64 @@ public class subject_Choose extends AppCompatActivity implements NavigationView.
 
                 if(getSupportFragmentManager().findFragmentById(R.id.fragment) != null) {
                     if(getSupportFragmentManager().findFragmentById(R.id.fragment).getTag().equals(TAG_CHANGE_SUBJECT)){
-                        if(!isDOubleTOuched){
-                            isDOubleTOuched = true;
-                            Snackbar snackbar = Snackbar.make(secondaryToolbar , "Press Again To Exit" , Snackbar.LENGTH_SHORT)
-                                    .setAction("EXIT NOW", new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            finish();
-                                        }
-                                    });
-                            snackbar.getView().setBackgroundColor(ContextCompat.getColor(subject_Choose.this , R.color.colorPrimary));
-                            snackbar.show();
+                            if (!isDOubleTOuched) {
+                                isDOubleTOuched = true;
+                                Snackbar snackbar = Snackbar.make(secondaryToolbar, "Press Again To Exit", Snackbar.LENGTH_SHORT)
+                                        .setAction("EXIT NOW", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                finish();
+                                            }
+                                        });
+                                snackbar.getView().setBackgroundColor(ContextCompat.getColor(Subject_Choose.this, R.color.colorPrimary));
+                                snackbar.show();
 
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    isDOubleTOuched = false;
-                                }
-                            } , 1500);
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        isDOubleTOuched = false;
+                                    }
+                                }, 1500);
 
-                            snackbar.show();
+                                snackbar.show();
 
-                        } else{
-                            finish();
-                        }
-                    } else {
-
-                        AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
-                        exitQ.setTitle("Are you sure?");
-                        exitQ.setMessage("Are you sure you want to exit to the homepage? All your progress will be lost.");
-                        exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                navItemIndex = 0;
-                                CURRENT_TAG = TAG_CHANGE_SUBJECT;
-                                navigationView.getMenu().getItem(0).setChecked(true);
-                                loadChoosedFragment();
+                            } else {
+                                finish();
                             }
-                        }).setNegativeButton("No", null);
-                        exitQ.show();
+                    } else if(getSupportFragmentManager().findFragmentById(R.id.fragment).getTag().equals(TAG_QUIZZI)) {
+                        if(amOnChaptersPart){
+                            Quizzi_Fragment tempFrag = (Quizzi_Fragment) getSupportFragmentManager().findFragmentById(R.id.fragment);
+                            tempFrag.performBackButtonClick();
+                        } else {
+                            navItemIndex = 0;
+                            CURRENT_TAG = TAG_CHANGE_SUBJECT;
+                            navigationView.getMenu().getItem(0).setChecked(true);
+                            loadChoosedFragment();
+                        }
+                    }
+                    else {
+
+                        if(amOnYearsPart){
+                            navItemIndex = 0;
+                            CURRENT_TAG = TAG_CHANGE_SUBJECT;
+                            navigationView.getMenu().getItem(0).setChecked(true);
+                            loadChoosedFragment();
+                        }else {
+
+                            AlertDialog.Builder exitQ = new AlertDialog.Builder(this);
+                            exitQ.setTitle("Are you sure?");
+                            exitQ.setMessage("Are you sure you want to exit to the homepage? All your progress will be lost.");
+                            exitQ.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    navItemIndex = 0;
+                                    CURRENT_TAG = TAG_CHANGE_SUBJECT;
+                                    navigationView.getMenu().getItem(0).setChecked(true);
+                                    loadChoosedFragment();
+                                }
+                            }).setNegativeButton("No", null);
+                            exitQ.show();
+                        }
                     }
                 }
         }

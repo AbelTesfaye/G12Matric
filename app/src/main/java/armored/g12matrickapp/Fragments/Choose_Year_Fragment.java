@@ -10,20 +10,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatDelegate;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import armored.g12matrickapp.Activities.WebViewActivity;
-import armored.g12matrickapp.Activities.subject_Choose;
+import armored.g12matrickapp.Activities.Subject_Choose;
 import armored.g12matrickapp.Adapters.YearsGridAdapter;
 import armored.g12matrickapp.Adapters.YearsGridStructure;
 import armored.g12matrickapp.R;
@@ -53,7 +51,8 @@ public class Choose_Year_Fragment extends Fragment {
         }} catch (Exception e){
             e.printStackTrace();
         }
-        ((subject_Choose) getActivity()).SetTitleOfDetailFromFragment(subject);
+        ((Subject_Choose) getActivity()).SetTitleOfDetailFromFragment(subject);
+        ((Subject_Choose) getActivity()).setAmOnYearsPart(true);
     }
 
     public Choose_Year_Fragment() {
@@ -91,7 +90,7 @@ public class Choose_Year_Fragment extends Fragment {
                     e.printStackTrace();
                 }
             } while(!goForIt);
-           // ((subject_Choose) getActivity()).SetTitleOfDetailFromFragment(subject);
+           // ((Subject_Choose) getActivity()).SetTitleOfDetailFromFragment(subject);
 
             double[] a = {
                     0.26 ,
@@ -159,11 +158,13 @@ public class Choose_Year_Fragment extends Fragment {
                 ex.putInt("Subject" , Constants.getCodeFromString(subject));
                 ex.putInt("Year" , Integer.parseInt(y[i]));
 
-                ((subject_Choose) getActivity()).deselectNavMenu();
+                ((Subject_Choose) getActivity()).deselectNavMenu();
 
                 Intent goToWebView = new Intent(getActivity() , WebViewActivity.class);
                 goToWebView.putExtra("Subject" , Constants.getCodeFromString(subject));
                 goToWebView.putExtra("Year" , Integer.parseInt(y[i]));
+
+                ((Subject_Choose) getActivity()).setAmOnYearsPart(false);
 
                 startActivity(goToWebView);
                 getActivity().overridePendingTransition(0,0);

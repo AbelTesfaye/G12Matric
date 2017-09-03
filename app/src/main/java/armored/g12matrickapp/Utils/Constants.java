@@ -247,6 +247,35 @@ public class Constants {
         }
     }
 
+    public static int giveMeQuestionNumber(int code){
+        switch (code){
+            case 1:
+                return ENGLISHQ;
+            case 2:
+                return MATHSQ;
+            case 3:
+                return SATQ;
+            case 4:
+                return PHYSICSQ;
+            case 5:
+                return CHEMISTRYQ;
+            case 6:
+                return BIOLOGYQ;
+            case 7:
+                return MATHSQ;
+            case 8:
+                return HISTORYQ;
+            case 9:
+                return ECONOMICSQ;
+            case 10:
+                return GEOGRAPHYQ;
+            case 11:
+                return CIVICSQ;
+            default:
+                return 0;
+        }
+    }
+
     public static final int COLLAPSE_BOTTOM_MENU = 4415;
     public static final int EXPANDE_BOTTOM_MENU = 4416;
     public static final int HIDE_BOTTOM_MENU = 4417;

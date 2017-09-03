@@ -16,10 +16,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDelegate;
@@ -41,11 +38,10 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import armored.g12matrickapp.Activities.subject_Choose;
+import armored.g12matrickapp.Activities.Subject_Choose;
 import armored.g12matrickapp.R;
 import armored.g12matrickapp.Utils.Constants;
 import armored.g12matrickapp.Utils.DbManager;
-import armored.g12matrickapp.Widgets.CustomWebView;
 import armored.g12matrickapp.Widgets.NestedWebView;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -86,8 +82,8 @@ public class Main_Question_page_Fragment extends Fragment {
 
         mainWebViewSheets = (NestedWebView) v.findViewById(R.id.sheetswebview);
 
-        ((subject_Choose) getActivity()).hide_second_toolbar();
-        ((subject_Choose) getActivity()).deselectNavMenu();
+        ((Subject_Choose) getActivity()).hide_second_toolbar();
+        ((Subject_Choose) getActivity()).deselectNavMenu();
 
         sheetsSwipeRefresh = (SwipeRefreshLayout) v.findViewById(R.id.sheetsSwipeRefresh);
         progressLayout = (LinearLayout) v.findViewById(R.id.progresslayout);
@@ -229,7 +225,7 @@ public class Main_Question_page_Fragment extends Fragment {
         mainTimer = new CountDownTimer(30 * 1000 * 60 * times, 1000) { //remove * 60 for debug
             @Override
             public void onTick(long l) {
-                try{((subject_Choose) getActivity()).SetSubTitleFromFragment(milliSecondsToTimer(l));}catch (Exception e){e.printStackTrace();}
+                try{((Subject_Choose) getActivity()).SetSubTitleFromFragment(milliSecondsToTimer(l));}catch (Exception e){e.printStackTrace();}
             }
 
             private void ad() {
@@ -239,7 +235,7 @@ public class Main_Question_page_Fragment extends Fragment {
                 b.setNeutralButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent a = new Intent(getActivity(), subject_Choose.class);
+                        Intent a = new Intent(getActivity(), Subject_Choose.class);
                         startActivity(a);
                     }
                 });
@@ -249,8 +245,8 @@ public class Main_Question_page_Fragment extends Fragment {
             @Override
             public void onFinish() {
                 if (didfinsh != 0) {
-                    ((subject_Choose) getActivity()).SetTitleOfDetailFromFragment(Constants.getSubjectName(Subject) + " " + Year);
-                    try{((subject_Choose) getActivity()).SetSubTitleFromFragment("");}catch (Exception e){e.printStackTrace();}
+                    ((Subject_Choose) getActivity()).SetTitleOfDetailFromFragment(Constants.getSubjectName(Subject) + " " + Year);
+                    try{((Subject_Choose) getActivity()).SetSubTitleFromFragment("");}catch (Exception e){e.printStackTrace();}
                 } else {
                     if (!amoutdontshow) {
                         if (!isPaused) {
@@ -266,7 +262,7 @@ public class Main_Question_page_Fragment extends Fragment {
                                 Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
                                 v.vibrate(300);
                                 Toast.makeText( getActivity() , "Your exam time has ended.", Toast.LENGTH_SHORT).show();
-                                Intent a = new Intent(getActivity() , subject_Choose.class);
+                                Intent a = new Intent(getActivity() , Subject_Choose.class);
                                 startActivity(a);
                             } catch (Exception d) {
                                 d.printStackTrace();
@@ -400,7 +396,7 @@ public class Main_Question_page_Fragment extends Fragment {
                     @Override
                     public void onReceivedTitle(WebView view, String title) {
                         super.onReceivedTitle(view, title);
-                        try{ ((subject_Choose) getActivity()).SetTitleFromFragment(title); }catch (Exception e){e.printStackTrace();}
+                        try{ ((Subject_Choose) getActivity()).SetTitleFromFragment(title); }catch (Exception e){e.printStackTrace();}
                     }
 
                     @Override

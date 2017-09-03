@@ -3,6 +3,7 @@ package armored.g12matrickapp.Fragments;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -16,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -24,11 +24,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.ArrayList;
 import java.util.List;
 
-import armored.g12matrickapp.Activities.subject_Choose;
+import armored.g12matrickapp.Activities.Subject_Choose;
 import armored.g12matrickapp.Adapters.GridCatagoryAdapter;
 import armored.g12matrickapp.Adapters.GridCatagoryStructure;
 import armored.g12matrickapp.R;
-import armored.g12matrickapp.Utils.Constants;
 import armored.g12matrickapp.Widgets.ExpandableGridView;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
@@ -86,9 +85,9 @@ public class Choose_Subject_Fragment extends Fragment {
             }
         });
 
-        ((subject_Choose) getActivity()).hide_container_two();
-
-        ((subject_Choose) getActivity()).SetTitleOfDetailFromFragment("Subjects");
+        ((Subject_Choose) getActivity()).hide_container_two();
+        ((Subject_Choose) getActivity()).setAmOnYearsPart(false);
+        ((Subject_Choose) getActivity()).SetTitleOfDetailFromFragment("Subjects");
 
         AppCompatImageView quiz = (AppCompatImageView) v.findViewById(R.id.appCompatImageView);
         AppCompatImageView challenge = (AppCompatImageView) v.findViewById(R.id.challengeImageView);
@@ -111,6 +110,14 @@ public class Choose_Subject_Fragment extends Fragment {
                 .load(R.drawable.face_cover)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(fb);
+
+        quiz.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getActivity() , Subject_Choose.class).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK).putExtra("alsoGoTo" , 1));
+                getActivity().overridePendingTransition(0, 0);
+            }
+        });
 
         if (mpbar.getIndeterminateDrawable() != null) {
             mpbar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
