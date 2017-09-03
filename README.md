@@ -8,17 +8,20 @@ to help them prepare for national examination
 
 ## Features
  + Exam Questions
- + Search specific question
+ + Search question inside an exam
  + Answers **Not that accurate**
  
 ## New Stuff
   * More attractive UI
+  * Quizzi - If you are not in the mode to do alot of questions
+  * Challenge - challenge another user
+  * Search - search a word from the all exams at once
   
 ## Uses
  This app uses some opensource project to help it work more efficently
   * [CircleProgress](https://github.com/lzyzsd/CircleProgress)
-  * [MaterialProgressBar]()
-  * [Glide]()
+  * [MaterialProgressBar](https://github.com/DreaminginCodeZH/MaterialProgressBar)
+  * [Glide](https://github.com/bumptech/glide)
   
 ## Contribution
   If you want to contribute you are more than welcome.
