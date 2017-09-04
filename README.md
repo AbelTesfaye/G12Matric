@@ -13,7 +13,7 @@ to help them prepare for national examination
  
 ## New Stuff
   * More attractive UI
-  * Quizzi - If you are not in the mode to do alot of questions
+  * Quizzi - If you are not in the mood to do alot of questions
   * Challenge - challenge another user
   * Search - search a word from the all exams at once
   
