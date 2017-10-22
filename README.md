@@ -10,7 +10,9 @@ to help them prepare for national examination
  + Exam Questions
  + Search question inside an exam
  + Answers **Not that accurate**
- 
+ + Search question inside an exam
+ + Has a countdown till the day the big test starts
+  
 ## New Stuff
   * More attractive UI
   * Quizzi - If you are not in the mood to do alot of questions
